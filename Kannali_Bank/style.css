@@ -1,0 +1,453 @@
+/* ═══════════════════════════════════════════════════════
+   KANALLI – BANCO 24H  |  style.css
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Variáveis globais ── */
+:root {
+  --accent:      #FF6600;
+  --accent-dark: #cc5200;
+  --bg:          #0d0d0d;
+  --surface:     #161616;
+  --surface2:    #1e1e1e;
+  --border:      rgba(255,255,255,0.08);
+  --text:        #f0f0f0;
+  --text-muted:  #888;
+  --radius:      16px;
+  --radius-sm:   10px;
+  --shadow:      0 8px 40px rgba(0,0,0,0.55);
+  --transition:  0.35s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ══════════════════════════════════════
+   TEMAS POR BANCO
+══════════════════════════════════════ */
+body.theme-itau      { --accent: #FF6600; --accent-dark: #cc5200; --bg: #1a0e00; --surface: #211100; --surface2: #2c1a00; }
+body.theme-santander { --accent: #EC0000; --accent-dark: #b30000; --bg: #150000; --surface: #1e0000; --surface2: #2b0000; }
+body.theme-nubank    { --accent: #8A05BE; --accent-dark: #680490; --bg: #0d0014; --surface: #130019; --surface2: #1c0026; }
+body.theme-bradesco  { --accent: #CC092F; --accent-dark: #9e0024; --bg: #150009; --surface: #1e000e; --surface2: #2b0015; }
+body.theme-bb        { --accent: #F7CD00; --accent-dark: #c4a200; --bg: #0f0f00; --surface: #191900; --surface2: #242400; }
+body.theme-caixa     { --accent: #1B72BA; --accent-dark: #145a94; --bg: #00080f; --surface: #001018; --surface2: #001b27; }
+
+/* ══════════════════════════════════════
+   TELAS
+══════════════════════════════════════ */
+.screen {
+  display: none;
+  min-height: 100vh;
+  animation: fadeIn .45s ease;
+}
+.screen.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════
+   TELA 1 – SELEÇÃO DE BANCO
+══════════════════════════════════════ */
+#screen-select {
+  background: var(--bg);
+  align-items: center;
+  padding: 48px 24px 24px;
+  gap: 32px;
+  position: relative;
+  overflow: hidden;
+}
+#screen-select::before {
+  content: '';
+  position: absolute;
+  width: 700px; height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,102,0,0.07) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  pointer-events: none;
+}
+
+.select-header { text-align: center; }
+.kanalli-brand {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; margin-bottom: 8px;
+}
+.brand-logo-placeholder {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
+  color: #fff; letter-spacing: -1px;
+}
+.brand-logo-placeholder.sm { width: 30px; height: 30px; border-radius: 8px; font-size: 14px; }
+.brand-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -1px; color: var(--text); }
+.brand-name.sm { font-size: 17px; }
+.select-subtitle { color: var(--text-muted); font-size: .9rem; letter-spacing: .04em; text-transform: uppercase; }
+.select-label { font-size: .95rem; color: var(--text-muted); letter-spacing: .02em; }
+
+.bank-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 16px;
+  width: 100%; max-width: 500px;
+}
+.bank-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 18px 22px;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+  position: relative; overflow: hidden;
+}
+.bank-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--card-accent, #FF6600); opacity: 0;
+  transition: opacity var(--transition);
+}
+.bank-card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--card-accent, #FF6600); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bank-card:hover::after { opacity: .06; }
+.bank-card-logo {
+  width: 60px; height: 60px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+  color: #fff; letter-spacing: -0.5px; position: relative; z-index: 1;
+}
+.bank-card-name {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem;
+  text-align: center; position: relative; z-index: 1;
+}
+.select-footer { color: var(--text-muted); font-size: .75rem; text-align: center; margin-top: auto; padding-top: 16px; }
+
+/* ══════════════════════════════════════
+   TELA 2 – LOGIN ESTILO ATM
+══════════════════════════════════════ */
+#screen-login {
+  background: var(--bg);
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  transition: background var(--transition);
+}
+
+.atm-step-wrapper {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeIn .3s ease;
+}
+
+.atm-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 36px 32px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative;
+}
+
+/* Botão voltar */
+.btn-back {
+  background: none; border: none; color: var(--text-muted);
+  font-size: .85rem; cursor: pointer; align-self: flex-start;
+  padding: 0; transition: color .2s; display: flex; align-items: center; gap: 6px;
+}
+.btn-back:hover { color: var(--accent); }
+
+/* Cabeçalho do banco no login */
+.atm-bank-header {
+  display: flex; align-items: center; gap: 14px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.bank-logo-slot {
+  width: 46px; height: 46px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: #fff;
+}
+.bank-name-label {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem;
+}
+
+/* ── Indicador de etapas ── */
+.atm-step-indicator {
+  display: flex; align-items: center; gap: 0;
+  padding: 4px 0;
+}
+.step-item {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex-shrink: 0;
+}
+.step-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: .82rem;
+  color: var(--text-muted);
+  transition: all .3s ease;
+}
+.step-item span {
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-muted); transition: color .3s;
+}
+.step-item.active .step-circle {
+  border-color: var(--accent); background: rgba(255,102,0,0.12); color: var(--accent);
+}
+.step-item.active span { color: var(--accent); }
+.step-item.done .step-circle {
+  border-color: #4cde8a; background: rgba(76,222,138,0.12); color: #4cde8a;
+}
+.step-item.done span { color: #4cde8a; }
+.step-connector {
+  flex: 1; height: 2px; background: var(--border);
+  margin: 0 8px; margin-bottom: 18px;
+  transition: background .3s;
+}
+.step-connector.active { background: var(--accent); }
+
+/* ── Instrução visual ── */
+.atm-instruction {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 12px 16px; border: 1px solid var(--border);
+}
+.atm-instruction i { color: var(--accent); font-size: 1.1rem; }
+.atm-instruction span { font-size: .9rem; color: var(--text-muted); }
+
+/* ── Campo do cartão ── */
+.field-group { display: flex; flex-direction: column; gap: 7px; }
+.field-group label { font-size: .78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; }
+.field-group input, .card-input {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 1.05rem;
+  color: var(--text); outline: none; transition: border-color .2s;
+  letter-spacing: .1em;
+}
+.field-group input:focus, .card-input:focus { border-color: var(--accent); }
+
+.login-error { color: #ff4a4a; font-size: .85rem; min-height: 20px; text-align: center; }
+.login-hint  { font-size: .75rem; color: var(--text-muted); text-align: center; opacity: .6; }
+.login-demo-info {
+  font-size: .8rem; color: var(--text-muted); text-align: center;
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 10px 14px; line-height: 1.7; border: 1px solid var(--border);
+}
+
+/* ── Display de pontos do PIN ── */
+.pin-display {
+  display: flex; justify-content: center; gap: 18px;
+  padding: 20px 0 16px;
+}
+.pin-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  transition: all .2s ease;
+}
+.pin-dot.filled {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(255,102,0,0.4);
+  transform: scale(1.15);
+}
+
+/* ── Teclado numérico PIN ── */
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 4px 0;
+}
+.pin-key {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  height: 58px;
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s, transform .1s;
+  user-select: none;
+}
+.pin-key:hover  { background: var(--surface); border-color: var(--accent); }
+.pin-key:active { transform: scale(.93); background: rgba(255,102,0,0.12); }
+
+.pin-key--del {
+  color: #ff5c5c;
+  font-size: 1.1rem;
+}
+.pin-key--del:hover { border-color: #ff5c5c; }
+
+.pin-key--ok {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.pin-key--ok:hover  { background: var(--accent-dark); border-color: var(--accent-dark); }
+.pin-key--ok:active { transform: scale(.93); }
+
+/* ══════════════════════════════════════
+   TELA 3 – DASHBOARD
+══════════════════════════════════════ */
+#screen-menu { background: var(--bg); transition: background var(--transition); }
+
+.dashboard-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 24px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+}
+
+/* Logo do banco no header (injetada pelo JS) */
+/* .dh-brand {
+  display: flex; align-items: center; gap: 10px;
+  flex: 1;
+} */
+
+.dh-bank {
+  flex: 2; text-align: center;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.2rem;
+  color: var(--accent); letter-spacing: .03em; text-transform: uppercase;
+}
+
+.btn-logout {
+  background: none; border: 1.5px solid var(--border); color: var(--text-muted);
+  border-radius: 8px; padding: 7px 14px; font-size: .82rem; cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+.dashboard-body {
+  max-width: 720px; margin: 0 auto; padding: 32px 20px 60px;
+  display: flex; flex-direction: column; gap: 28px;
+}
+
+/* Cartão de saldo */
+.balance-card {
+  background: var(--surface); border: 1.5px solid var(--accent);
+  border-radius: 20px; padding: 32px 36px; position: relative; overflow: hidden;
+  box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+.balance-card::before {
+  content: ''; position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
+  opacity: .07; right: -80px; top: -80px; pointer-events: none;
+}
+.bc-label  { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 8px; }
+.bc-amount { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 10px; }
+.bc-user   { font-size: .85rem; color: var(--text-muted); }
+
+/* Grade de operações */
+.ops-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
+}
+.op-btn {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 20px 12px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: .88rem;
+  transition: border-color var(--transition), background var(--transition), transform .15s;
+}
+.op-btn:hover  { border-color: var(--accent); background: var(--surface2); transform: translateY(-3px); }
+.op-btn:active { transform: scale(.96); }
+.op-icon { font-size: 1.5rem; line-height: 1; }
+
+/* Extrato */
+.statement-section { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px; }
+.statement-title   { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 16px; color: var(--accent); }
+.statement-list    { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.statement-list li { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 12px 16px; background: var(--surface2); border-radius: var(--radius-sm); font-size: .87rem; }
+.stmt-desc { color: var(--text); }
+.stmt-date { color: var(--text-muted); font-size: .77rem; margin-top: 2px; }
+.stmt-val  { font-family: 'Syne', sans-serif; font-weight: 700; white-space: nowrap; }
+.stmt-val.credit { color: #4cde8a; }
+.stmt-val.debit  { color: #ff5c5c; }
+.stmt-bal  { color: var(--text-muted); font-size: .77rem; text-align: right; margin-top: 2px; }
+
+/* ══════════════════════════════════════
+   BOTÕES GERAIS
+══════════════════════════════════════ */
+.btn-primary {
+  background: var(--accent); color: #fff; border: none;
+  border-radius: var(--radius-sm); padding: 14px;
+  font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: background var(--transition), transform .15s;
+  letter-spacing: .02em;
+}
+.btn-primary:hover  { background: var(--accent-dark); }
+.btn-primary:active { transform: scale(.97); }
+
+.btn-secondary {
+  background: var(--surface2); color: var(--text-muted);
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 13px;
+  font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 600;
+  cursor: pointer; transition: border-color .2s, color .2s;
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+
+/* ══════════════════════════════════════
+   MODAL
+══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999; padding: 16px;
+  backdrop-filter: blur(6px); animation: fadeIn .25s ease;
+}
+.modal-box {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 32px 30px; width: 100%; max-width: 380px;
+  display: flex; flex-direction: column; gap: 16px; box-shadow: var(--shadow);
+}
+.modal-box h3 { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.3px; }
+.modal-box p  { color: var(--text-muted); font-size: .92rem; line-height: 1.55; }
+.modal-input-wrap input {
+  width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 1.1rem; color: var(--text);
+  outline: none; transition: border-color .2s;
+}
+.modal-input-wrap input:focus { border-color: var(--accent); }
+.modal-error   { color: #ff4a4a; font-size: .83rem; min-height: 18px; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+
+/* ══════════════════════════════════════
+   RESPONSIVIDADE
+══════════════════════════════════════ */
+@media (max-width: 480px) {
+  .atm-card    { padding: 24px 18px; }
+  .bc-amount   { font-size: 2.1rem; }
+  .ops-grid    { grid-template-columns: repeat(3, 1fr); }
+  .bank-grid   { grid-template-columns: repeat(2, 1fr); }
+  .balance-card { padding: 24px; }
+  .pin-key     { height: 52px; font-size: 1.2rem; }
+}
+/* ══════════════════════════════════════
+   ANIMAÇÃO DE BLOQUEIO – SHAKE
+══════════════════════════════════════ */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15%       { transform: translateX(-8px); }
+  30%       { transform: translateX(8px); }
+  45%       { transform: translateX(-6px); }
+  60%       { transform: translateX(6px); }
+  75%       { transform: translateX(-3px); }
+  90%       { transform: translateX(3px); }
+}
+
+.shake {
+  animation: shake 0.6s ease-in-out !important;
+}
